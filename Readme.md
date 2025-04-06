@@ -9,5 +9,5 @@
 </ul>
 
 <h3>To run project use<h3>
-<h3>npm i</h3>
-<h3>npm run dev</h3>
+<div>npm i</div>
+<div>npm run dev</div>
