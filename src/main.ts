@@ -29,7 +29,6 @@ import {
   const lowCard = ["A", "B", "C", "D", "E"];
   const highCard = ["W", "X", "Y", "Z"];
 
-
   const style = new TextStyle({
     fill: "#ffffff",
     fillGradientType: 1,
@@ -85,7 +84,7 @@ import {
   // Load a bundle...
   const lowLevelCard = await Assets.loadBundle("low-level-card");
 
-  console.log("lowLevelCard", lowLevelCard)
+  console.log("lowLevelCard", lowLevelCard);
   // Load another bundle...
   const highLevelCard = await Assets.loadBundle("high-level-card");
 
