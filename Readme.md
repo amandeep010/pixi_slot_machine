@@ -8,6 +8,9 @@
     <li>different js logics</li>
 </ul>
 
+The frame is used from 
+<a href="https://pngtree.com/freepng/blank-game-frame-design-in-fantasy-theme_15956058.html">PNG Tree</a>
+
 <h3>To run project use<h3>
 <div>npm i</div>
 <div>npm run dev</div>
