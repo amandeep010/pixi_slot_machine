@@ -9,7 +9,7 @@
 </ul>
 
 To create pixi app Follow Below tutorial.
-to implement this => npm create pixi.js@latest
+to implement this => npm create pixi.js@latest</br>
 <a href="https://pixijs.io/create-pixi/img/demo.gif"><b>Tutorial</b></a>
 
 
