@@ -1,4 +1,4 @@
-<h2>Pixi Spin animation</h2>
+<h2>Pixi Slot machine game</h2>
 <div> using images in my asset folder</div>
 
 <h3>Content to learn.</h3>
