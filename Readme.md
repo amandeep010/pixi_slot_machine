@@ -8,14 +8,14 @@
     <li>different js logics</li>
 </ul>
 
-To create pixi app Follow Below tutorial.
+To create pixi app Follow Below tutorial.</br>
 to implement this => npm create pixi.js@latest</br>
 <a href="https://pixijs.io/create-pixi/img/demo.gif"><b>Tutorial</b></a>
 
 
 
-The frame in my game is from a website named "Pngtree" link is below. </br>
-<a href="https://pngtree.com/freepng/blank-game-frame-design-in-fantasy-theme_15956058.html">PNG Tree</a>
+The frame in my game is from a website named "Pngwing" link is below. </br>
+<a href="https://www.pngwing.com/en/free-png-zvthf/download">PNG Wing</a>
 
 <h3>To run project use<h3>
 <h6>npm i</h6>

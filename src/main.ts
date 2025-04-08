@@ -1,7 +1,6 @@
 import {
   Application,
   Assets,
-  BlurFilter,
   Sprite,
   Text,
   TextStyle,
@@ -17,14 +16,14 @@ import {
   // Append the application canvas to the document body
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
-  const reel = [
-    ["A", "B", "Z", "D", "Y"],
-    ["B", "Z", "Y", "D", "A"],
-    ["Y", "D", "B", "Z", "A"],
-    ["Z", "A", "D", "Y", "B"],
+  const reels = [
+    ["A", "B", "Z", "D"],
+    ["B", "Z", "Y", "D"],
+    ["Y", "D", "B", "Z"],
+    ["Z", "A", "D", "Y"],
   ];
 
-  let spriteSheet = [];
+  let spriteSheet: Sprite[] = [];
 
   const lowCard = ["A", "B", "C", "D", "E"];
   const highCard = ["W", "X", "Y", "Z"];
@@ -78,108 +77,137 @@ import {
           { alias: "letterZ", src: "./assets/RedZ.png" },
         ],
       },
+      {
+        name: "frame",
+        assets: [
+          { alias: "frame", src: "./assets/frame.png" }
+        ],
+      },
     ],
   };
   await Assets.init({ manifest });
   // Load a bundle...
   const lowLevelCard = await Assets.loadBundle("low-level-card");
 
-  console.log("lowLevelCard", lowLevelCard);
   // Load another bundle...
   const highLevelCard = await Assets.loadBundle("high-level-card");
+  const frametexture = await Assets.loadBundle("frame");
 
+  console.log(frametexture)
+
+  const frame = new Sprite(frametexture.frame)
+  
+  console.log("frame", frame)
+  frame.anchor.set(0.5);
+  frame.x = window.innerWidth/2;
+  frame.y = window.innerHeight / 2;
+  frame.width = 1000;
+  frame.height = 700;
+  
   const text = new Text({
     text: "PIXI Slot spin",
     style,
   });
   text.x = window.innerWidth / 2 - 400;
   text.y = 40;
-  app.stage.addChild(text);
+  
 
   console.log("first");
 
-  const reelLength = reel.length;
-  for (let i = 0; i < reelLength; i++) {
-    const len = reel[i].length;
-    for (let j = 0; j < len; j++) {
-      const data = reel[i][j];
-      const spriteData = new Sprite(
-        highCard.includes(data)
-          ? highLevelCard[`letter${data}`]
-          : lowLevelCard[`letter${data}`]
-      );
-
-      //image height = 174
-      //image width = 145
-      spriteData.anchor.set(0.5);
-      spriteData.x = window.innerWidth / 2.4 + i * 110;
-      spriteData.y = window.innerHeight / 4 + j * 100;
-      spriteData.width = 100;
-      spriteData.height = 90;
-      spriteSheet.push(spriteData);
-      app.stage.addChild(spriteData);
+  const setframe = () => {
+    for (let i = 0; i < reels.length; i++) {
+      const len = reels[i].length;
+      for (let j = 0; j < len; j++) {
+        const data = reels[i][j];
+        const spriteData = new Sprite(
+          highCard.includes(data)
+            ? highLevelCard[`letter${data}`]
+            : lowLevelCard[`letter${data}`]
+        );
+  
+        //image height = 174
+        //image width = 145
+        spriteData.anchor.set(0.5);
+        spriteData.x = window.innerWidth / 2 - 240 + i*174
+        spriteData.y = window.innerHeight / 2 -220 + j*145
+        spriteData.width = 100;
+        spriteData.height = 90;
+        console.log("SPRITE",i,j,spriteData.y)
+        spriteSheet.push(spriteData);
+        app.stage.addChild(spriteData);
+      }
     }
   }
 
+  setframe()
+
   spinWheel.on("click", async () => {
     spinWheel.interactive = false;
-    const reelHeight = 500;
+    const reelHeight = 4 * 145; // Total height of all sprites in a reel (4 sprites * 145px each)
     const spinDuration = 3000;
     const startTime = Date.now();
-
+    const frameBottom = window.innerHeight / 2 + 350; // Frame's bottom boundary
+  
     // Group sprites into reels
-    const reels: any[] = [];
+    let reels: any[] = [];
     for (let i = 0; i < 4; i++) {
-      reels.push(spriteSheet.slice(i * 5, (i + 1) * 5));
+      reels.push(spriteSheet.slice(i * 4, (i + 1) * 4));
     }
-
-    // Add blur and set initial positions
-    spriteSheet.forEach((sprite) => {
-      sprite.filters = [new BlurFilter()];
-    });
-
+  
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / spinDuration, 1);
       const easedProgress = 1 - Math.pow(1 - progress, 3);
-
+  
       reels.forEach((reel, reelIndex) => {
-        const reelOffset = easedProgress * reelHeight * (3 + reelIndex * 0.2);
-        console.log("data", reelOffset);
-
+        const reelOffset = (easedProgress * reelHeight * 3) % reelHeight;
         reel.forEach((sprite: any, spriteIndex: number) => {
-          const baseY = window.innerHeight / 4 + spriteIndex * 100;
-          const newY = (baseY + reelOffset) % reelHeight;
-          sprite.y = baseY + newY;
+          const baseY = window.innerHeight / 2 - 200 + spriteIndex * 145;
+          sprite.y = baseY + reelOffset;
 
-          if (sprite.y > baseY + reelHeight) {
+          console.log(sprite.texture.label, sprite.y)
+      
+          // Correct wrapping (teleport to top when below frame)
+          if (sprite.y > frameBottom) {
             sprite.y -= reelHeight;
           }
         });
+        console.log("new",reelIndex)
       });
-
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        // Snap to final positions (ensure they stay inside frame)
+        reels.forEach((reel) => {
+          reel.forEach((sprite: any, spriteIndex: number) => {
+            sprite.y = Math.min(
+              window.innerHeight / 2 - 200 + spriteIndex * 145,
+              frameBottom - 145
+            );
+          });
+        });
+        spinWheel.interactive = true;
+      }
+      
+  
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
         // Snap to final positions
         reels.forEach((reel) => {
-          const finalOffset =
-            Math.round((easedProgress * reelHeight * 3) / 100) * 100;
           reel.forEach((sprite: any, spriteIndex: number) => {
-            sprite.y =
-              window.innerHeight / 4 + spriteIndex * 100 + spriteIndex * 110;
-            sprite.filters = [];
+            sprite.y = window.innerHeight / 2 - 200 + spriteIndex * 145;
           });
         });
         spinWheel.interactive = true;
       }
     };
-
+  
     animate();
   });
+  app.stage.addChild(frame)
+  app.stage.addChild(text);
 
-  // Listen for animate update
-  app.ticker.add(() => {
-    // bunny.rotation += 0.1 * time.deltaTime;
-  });
+  app.ticker.add(() => { });
 })();
