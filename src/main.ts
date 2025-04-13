@@ -17,10 +17,12 @@ import {
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
   const reels = [
-    ["A", "B", "Z", "D"],
-    ["B", "Z", "Y", "D"],
-    ["Y", "D", "B", "Z"],
-    ["Z", "A", "D", "Y"],
+    ["A", "B", "Z", "D", "A"],
+    ["B", "Z", "Y", "D", "D"],
+    ["Y", "D", "B", "Z", "B"],
+    ["Z", "A", "D", "Y", "A"],
+    ["Z", "A", "D", "Y", "A"],
+    ["Z", "A", "D", "Y", "A"] 
   ];
 
   let spriteSheet: Sprite[] = [];
@@ -93,16 +95,13 @@ import {
   const highLevelCard = await Assets.loadBundle("high-level-card");
   const frametexture = await Assets.loadBundle("frame");
 
-  console.log(frametexture)
-
   const frame = new Sprite(frametexture.frame)
   
-  console.log("frame", frame)
   frame.anchor.set(0.5);
   frame.x = window.innerWidth/2;
   frame.y = window.innerHeight / 2;
-  frame.width = 1000;
-  frame.height = 700;
+  frame.width = 3000;
+  frame.height = 1500;
   
   const text = new Text({
     text: "PIXI Slot spin",
@@ -111,8 +110,6 @@ import {
   text.x = window.innerWidth / 2 - 400;
   text.y = 40;
   
-
-  console.log("first");
 
   const setframe = () => {
     for (let i = 0; i < reels.length; i++) {
@@ -128,11 +125,10 @@ import {
         //image height = 174
         //image width = 145
         spriteData.anchor.set(0.5);
-        spriteData.x = window.innerWidth / 2 - 240 + i*174
-        spriteData.y = window.innerHeight / 2 -220 + j*145
-        spriteData.width = 100;
-        spriteData.height = 90;
-        console.log("SPRITE",i,j,spriteData.y)
+        spriteData.x = window.innerWidth / 4 + i*600
+        spriteData.y = window.innerHeight / 2 -500 + j*250
+        spriteData.width = 300;
+        spriteData.height = 200;
         spriteSheet.push(spriteData);
         app.stage.addChild(spriteData);
       }
@@ -143,71 +139,50 @@ import {
 
   spinWheel.on("click", async () => {
     spinWheel.interactive = false;
-    const reelHeight = 4 * 145; // Total height of all sprites in a reel (4 sprites * 145px each)
+    const reelHeight = window.innerHeight/2 -100; // Total height of all sprites in a reel (4 sprites * 145px each)
     const spinDuration = 3000;
     const startTime = Date.now();
-    const frameBottom = window.innerHeight / 2 + 350; // Frame's bottom boundary
+    const frameBottom = window.innerHeight/2 + 550// Frame's bottom boundary
   
     // Group sprites into reels
     let reels: any[] = [];
-    for (let i = 0; i < 4; i++) {
-      reels.push(spriteSheet.slice(i * 4, (i + 1) * 4));
+    for (let i = 0; i < 6; i++) {
+      reels.push(spriteSheet.slice(i * 5, (i + 1) * 5));
     }
   
-    const animate = () => {
+    const animateSpin = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / spinDuration, 1);
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
-  
-      reels.forEach((reel, reelIndex) => {
-        const reelOffset = (easedProgress * reelHeight * 3) % reelHeight;
-        reel.forEach((sprite: any, spriteIndex: number) => {
-          const baseY = window.innerHeight / 2 - 200 + spriteIndex * 145;
-          sprite.y = baseY + reelOffset;
 
-          console.log(sprite.texture.label, sprite.y)
+      const animate = ()=>{
+        reels.forEach((reel) => {
+          reel.forEach((sprite: any) => {
+            sprite.y += 200
+            if (sprite.y > frameBottom) {
+              sprite.y -= reelHeight;
+            }
+          });
+        })}
       
-          // Correct wrapping (teleport to top when below frame)
-          if (sprite.y > frameBottom) {
-            sprite.y -= reelHeight;
-          }
-        });
-        console.log("new",reelIndex)
-      });
       
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        // Snap to final positions (ensure they stay inside frame)
         reels.forEach((reel) => {
           reel.forEach((sprite: any, spriteIndex: number) => {
-            sprite.y = Math.min(
-              window.innerHeight / 2 - 200 + spriteIndex * 145,
+            sprite.y = window.innerHeight / 2 -500 + spriteIndex*250
               frameBottom - 145
-            );
           });
         });
         spinWheel.interactive = true;
-      }
-      
-  
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        // Snap to final positions
-        reels.forEach((reel) => {
-          reel.forEach((sprite: any, spriteIndex: number) => {
-            sprite.y = window.innerHeight / 2 - 200 + spriteIndex * 145;
-          });
-        });
-        spinWheel.interactive = true;
+        return "Done Spin"
       }
     };
-  
-    animate();
+    app.ticker.add(animateSpin)
   });
-  app.stage.addChild(frame)
   app.stage.addChild(text);
 
-  app.ticker.add(() => { });
+  app.ticker.add((tick) => { 
+    console.log("tick", tick)
+  });
 })();
