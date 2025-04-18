@@ -19,7 +19,7 @@ export const style = new TextStyle({
       fontFamily: "Courier New",
       fontSize: 150,
       //@ts-ignore
-      fontWeight: 900,
+      fontWeight: 600,
       miterLimit: 33,
       //@ts-ignore
       padding: "",
@@ -31,7 +31,7 @@ export const betStyle = new TextStyle({
     fill: "#ffffff",
     fillGradientType: 1,
     fontFamily: "Tahoma",
-    fontSize: 62,
+    fontSize: 50,
     //@ts-ignore
     fontWeight: 300,
     miterLimit: 33,
