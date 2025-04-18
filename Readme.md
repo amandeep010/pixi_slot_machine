@@ -12,11 +12,6 @@ To create pixi app Follow Below tutorial.</br>
 to implement this => npm create pixi.js@latest</br>
 <a href="https://pixijs.io/create-pixi/img/demo.gif"><b>Tutorial</b></a>
 
-
-
-The frame in my game is from a website named "Pngwing" link is below. </br>
-<a href="https://www.pngwing.com/en/free-png-zvthf/download">PNG Wing</a>
-
 <h3>To run project use<h3>
 <h6>npm i</h6>
 <h6>npm run dev</h6>
