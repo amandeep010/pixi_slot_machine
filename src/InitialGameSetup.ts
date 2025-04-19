@@ -93,7 +93,7 @@ const InitialGameSetup = async () => {
         //image height = 174
         //image width = 145
         spriteData.anchor.set(0.5)
-        spriteData.x = window.innerWidth / 4 + i * 600
+        spriteData.x = window.innerWidth / 4 + i * 450 + 300
         spriteData.y = window.innerHeight / 2 - 500 + j * 250
         spriteData.width = 300
         spriteData.height = 200
