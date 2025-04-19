@@ -4,19 +4,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "npm run dev",
     "build": "npm run lint && tsc && vite build",
-    "prettier:list": "prettier \"{src,test}/**/*.{ts,js}\" --list-different",
-    "prettier:fix": "prettier \"{src,test}/**/*.{ts,js}\" --write-different",
+    "prettier:list": "npx prettier --list-different",
+    "prettier:fix": "npx prettier . --write",
+    "start": "npm run dev",
+    "prepare": "husky",
     "lint": "eslint .",
-    "dev": "vite",
-    "prepare": "husky"
+    "dev": "vite"
   },
   "engines": {
     "node": ">=20"
   },
   "lint-staged": {
-      "src/*": "prettier --write --ignore-unknown"
+    "src/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
     "pixi.js": "^8.8.1"

@@ -1,3 +1,15 @@
 # Ignore artifacts:
 build
 coverage
+node_modules
+
+.prettierrc
+eslint.config.mjs
+package-lock.json
+Readme.md
+tsconfig.json
+vite.config.ts
+index.html
+vite-env.d.ts
+
+public/
