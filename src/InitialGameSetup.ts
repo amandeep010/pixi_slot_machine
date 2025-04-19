@@ -126,9 +126,9 @@ const InitialGameSetup = async () => {
   spinWheel.width = 300
   spinWheel.interactive = true
   spinWheel.on('click', async () => {
-    const array = await RotateSlots(newReel ? newReel : spinWheel, spriteSheet)
+    const array = await RotateSlots(spinWheel, newReel ? newReel : spriteSheet)
     newReel = []
-    newReel.push(array)
+    newReel = array
   })
   app.stage.addChild(spinWheel)
 
