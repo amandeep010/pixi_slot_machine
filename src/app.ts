@@ -1,5 +1,5 @@
 import { Application } from 'pixi.js'
-import InitialGameSetup from './InitialGameSetup'
+import loadingSlot from './loadingSlot'
 
 // Create a new application
 const app = new Application()
@@ -10,7 +10,7 @@ const app = new Application()
     background: '#090C25',
     resizeTo: window
   })
-  await InitialGameSetup()
+  await loadingSlot()
 })()
 
 export default app

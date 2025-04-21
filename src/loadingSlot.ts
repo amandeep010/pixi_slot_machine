@@ -1,32 +1,17 @@
 import { Assets, Graphics, Sprite, Text } from 'pixi.js'
 import app from './app'
-import { highCard, reels, style, betStyle, winStyle, winAmountStyle } from './helper/Helper'
+import { style, betStyle, winStyle, winAmountStyle, setframe } from './helper/Helper'
 import { RotateSlots } from './RotateSlots'
 
-const InitialGameSetup = async () => {
+export const spriteSheet: Sprite[] = []
+const loadingSlot = async () => {
   // Append the application canvas to the document body
   document.getElementById('pixi-container')!.appendChild(app.canvas)
 
-  let spriteSheet: Sprite[] = []
-  let currentBetAmount = 10.0
-  let totalWins = 0
-  let credit = 0
+  let currentBetAmount: number = 10.0
+  let totalWins: number = 0
+  let credit: number = 0
   const changeAmount = 1
-  let newReel: any
-
-  //Spin wheel as a text ===> as begin
-  const buyFreeSpin = new Text({
-    text: 'Buy \nfree \nSpin',
-    style
-  })
-
-  buyFreeSpin.x = window.innerWidth / 10
-  buyFreeSpin.y = window.innerHeight / 2
-  buyFreeSpin.cursor = 'pointer'
-  buyFreeSpin.interactive = true
-
-  //adding spin wheel to staging
-  app.stage.addChild(buyFreeSpin)
 
   //menifest file to load all images
   const manifest = {
@@ -74,6 +59,20 @@ const InitialGameSetup = async () => {
   const buttonTexture = await Assets.loadBundle('buttons')
   const loadImages = await Assets.loadBundle('images')
 
+  //Spin wheel as a text ===> as begin
+  const buyFreeSpin = new Text({
+    text: 'Buy \nfree \nSpin',
+    style
+  })
+
+  buyFreeSpin.x = window.innerWidth / 10
+  buyFreeSpin.y = window.innerHeight / 2
+  buyFreeSpin.cursor = 'pointer'
+  buyFreeSpin.interactive = true
+
+  //adding spin wheel to staging
+  app.stage.addChild(buyFreeSpin)
+
   const text = new Text({
     text: 'PIXI Slot spin',
     style
@@ -81,29 +80,7 @@ const InitialGameSetup = async () => {
   text.x = window.innerWidth / 2 - 400
   text.y = 40
 
-  const setframe = () => {
-    for (let i = 0; i < reels.length; i++) {
-      const len = reels[i].length
-      for (let j = 0; j < len; j++) {
-        const data = reels[i][j]
-        const spriteData = new Sprite(
-          highCard.includes(data) ? highLevelCard[`letter${data}`] : lowLevelCard[`letter${data}`]
-        )
-
-        //image height = 174
-        //image width = 145
-        spriteData.anchor.set(0.5)
-        spriteData.x = window.innerWidth / 4 + i * 450 + 300
-        spriteData.y = window.innerHeight / 2 - 500 + j * 250
-        spriteData.width = 300
-        spriteData.height = 200
-        spriteSheet.push(spriteData)
-        app.stage.addChild(spriteData)
-      }
-    }
-  }
-
-  setframe()
+  setframe(lowLevelCard, highLevelCard)
 
   buyFreeSpin.on('click', async () => {
     alert(':) have not added screen yet')
@@ -126,9 +103,8 @@ const InitialGameSetup = async () => {
   spinWheel.width = 300
   spinWheel.interactive = true
   spinWheel.on('click', async () => {
-    const array = await RotateSlots(spinWheel, newReel ? newReel : spriteSheet)
-    newReel = []
-    newReel = array
+    // app.ticker.remove(rotateImage)
+    const array = await RotateSlots(spinWheel, spriteSheet)
   })
   app.stage.addChild(spinWheel)
 
@@ -221,10 +197,8 @@ const InitialGameSetup = async () => {
     betAmount.text = `${currentBetAmount}`
   })
   app.stage.addChild(minus)
-
   app.stage.addChild(text)
-
   app.ticker.add(() => app.renderer.resize(window.innerWidth, window.innerHeight))
 }
 
-export default InitialGameSetup
+export default loadingSlot
