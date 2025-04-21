@@ -12,9 +12,7 @@ export const reels = [
   ['Z', 'A', 'D', 'Y', 'A']
 ]
 
-export const paylineArray = [
-  ["02", "12", "22", "32", "42", "52"]
-]
+export const paylineArray = [['02', '12', '22', '32', '42', '52']]
 
 export const frameBottom = window.innerHeight / 2 + 550 // Frame's bottom boundary
 
