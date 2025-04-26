@@ -16,9 +16,62 @@ const shuffle = (array: Sprite[]) => {
   return array
 }
 
+const winReelChecking = (generatedRandomArray: any) => {
+  const newPaylineArray: string[] = []
+
+  for (let colIndex = 0; colIndex < paylineArray.length; colIndex++) {
+    const paylineColumn = paylineArray[colIndex]
+
+    for (let elementIndex = 0; elementIndex < paylineColumn.length; elementIndex++) {
+      const element = paylineArray[colIndex][elementIndex]
+      const indexY = Number(element[0])
+      const indexX = Number(element[1])
+      const currentElement = generatedRandomArray[indexY][indexX]
+      let next
+      let nextNumber1
+      let nextNumber2
+      let nextElement
+
+      const lastIndex = paylineColumn.length - 1 === elementIndex
+
+      //if we are at lastindex and our 0th row of newPayline is loaded with paylineColumn then we return the entire paylineArray
+      if (lastIndex) {
+        newPaylineArray.push(element)
+        return [newPaylineArray]
+      }
+
+      if (!lastIndex) {
+        next = paylineArray[colIndex][elementIndex + 1]
+        nextNumber1 = Number(next[0])
+        nextNumber2 = Number(next[1])
+        nextElement = generatedRandomArray[nextNumber1][nextNumber2]
+
+        //if next element and current elements are not same skip this rowSearch move to next row and empty the array
+        if (currentElement !== nextElement) {
+          newPaylineArray.length = 0
+          break
+        } else {
+          newPaylineArray.push(element)
+        }
+      }
+    }
+  }
+  return [newPaylineArray]
+}
+
 //animation for image
 export const animateImage = (operation: string) => {
-  paylineArray.map((paylineColumn) => {
+  const generatedRandomArray: any = newReel.map((data) =>
+    data.map((text) => text.texture.label?.split('/').slice(-1).pop()?.split('.')[0].slice(-1))
+  )
+
+  const newPaylineArray = winReelChecking(generatedRandomArray)
+
+  if (newPaylineArray[0] === null) {
+    return
+  }
+
+  newPaylineArray.map((paylineColumn: any) => {
     paylineColumn.map((payline: any) => {
       const column = Number(payline[0])
       const row = Number(payline[1])
